@@ -6,16 +6,12 @@ const path    = require('path');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// ── SERVE ARQUIVOS ESTÁTICOS (pasta public/) ──
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── CREDENCIAIS AMADEUS ──
 const AMADEUS_KEY    = 'wglUqHoyBZDbAh03oSSqdGrZTT4kgUGf';
 const AMADEUS_SECRET = 'DvJZGHAb3oeMbClf';
 const AMADEUS_BASE   = 'https://test.api.amadeus.com';
 
-// ── GERA TOKEN ──
 async function getToken() {
   const res = await fetch(`${AMADEUS_BASE}/v1/security/oauth2/token`, {
     method: 'POST',
@@ -26,17 +22,13 @@ async function getToken() {
   return data.access_token;
 }
 
-// ── BUSCA VOOS ──
 app.get('/api/flights', async (req, res) => {
   try {
     const { origin, destination, date, adults, children, infants } = req.query;
-
     if (!origin || !destination || !date) {
       return res.status(400).json({ error: 'Parâmetros obrigatórios: origin, destination, date' });
     }
-
     const token = await getToken();
-
     const params = new URLSearchParams({
       originLocationCode: origin,
       destinationLocationCode: destination,
@@ -47,18 +39,14 @@ app.get('/api/flights', async (req, res) => {
       currencyCode: 'BRL',
       max: 10
     });
-
     const response = await fetch(
       `${AMADEUS_BASE}/v2/shopping/flight-offers?${params}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-
     const data = await response.json();
-
     if (data.errors) {
       return res.status(400).json({ error: data.errors[0]?.detail || 'Erro na busca' });
     }
-
     res.json(data);
   } catch (err) {
     console.error(err);
@@ -66,12 +54,10 @@ app.get('/api/flights', async (req, res) => {
   }
 });
 
-// ── BUSCA AEROPORTOS (autocomplete) ──
 app.get('/api/airports', async (req, res) => {
   try {
     const { keyword } = req.query;
     if (!keyword || keyword.length < 2) return res.json({ data: [] });
-
     const token = await getToken();
     const response = await fetch(
       `${AMADEUS_BASE}/v1/reference-data/locations?subType=AIRPORT,CITY&keyword=${encodeURIComponent(keyword)}&page[limit]=8&view=LIGHT`,
@@ -84,8 +70,7 @@ app.get('/api/airports', async (req, res) => {
   }
 });
 
-// ── ROTA PRINCIPAL — entrega o site ──
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
