@@ -457,7 +457,13 @@ async function searchFlights(){
 
     if(data.error){ list.innerHTML=`<div class="error-msg">⚠️ ${data.error}</div>`; return; }
 
-    const outFlights = (data.data||[]).slice(0,8).map(parseOffer);
+    // Suporta resposta Amadeus (data.data) e simulada (data.flights)
+    let outFlights = [];
+    if(data.source === 'simulated') {
+      outFlights = data.flights || [];
+    } else {
+      outFlights = (data.data||[]).slice(0,8).map(parseOffer);
+    }
     searchData.outFlights = outFlights;
 
     let retFlights = [];
@@ -469,10 +475,17 @@ async function searchFlights(){
       const dateReturn = document.getElementById('dateReturn').value;
       if(dateReturn){
         try{
-          const rParams = new URLSearchParams({origin:originReturnCode,destination:destReturnCode,date:dateReturn,adults:passengers.adults});
+          const rParams = new URLSearchParams({origin:originReturnCode,destination:destReturnCode,date:dateReturn,adults:passengers.adults,
+            ...(passengers.children>0?{children:passengers.children}:{}),
+            ...(passengers.infants>0?{infants:passengers.infants}:{})
+          });
           const rRes = await fetch(`${BACKEND_URL}/api/flights?${rParams}`);
           const rData = await rRes.json();
-          retFlights = (rData.data||[]).slice(0,8).map(parseOffer);
+          if(rData.source === 'simulated') {
+            retFlights = rData.flights || [];
+          } else {
+            retFlights = (rData.data||[]).slice(0,8).map(parseOffer);
+          }
           searchData.retFlights = retFlights;
           const retDate = new Date(dateReturn+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
           retHTML = `<div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);margin:2rem 0 1rem;">↩ Voos de Volta — ${retDate}</div>`;
@@ -481,9 +494,14 @@ async function searchFlights(){
       }
     }
 
-    document.getElementById('resultsTitle').textContent = `${outFlights.length + retFlights.length} voos encontrados`;
+    const sourceNote = data.source==='simulated'
+      ? `<div style="font-size:.65rem;color:var(--accent2);margin-bottom:1rem;opacity:.8;">⚡ Cotações estimadas — valores confirmados pela equipe via WhatsApp</div>`
+      : '';
+
+    document.getElementById('resultsTitle').textContent = `${outFlights.length + retFlights.length} opções encontradas`;
     const outDate = new Date(dateOut+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
-    let html = `<div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">✈ Voos de Ida — ${outDate}</div>`;
+    let html = sourceNote;
+    html += `<div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">✈ Voos de Ida — ${outDate}</div>`;
     html += outFlights.length ? outFlights.map(f=>flightCardHTML(f,'out')).join('') : `<div class="error-msg">Nenhum voo encontrado para esta rota/data.</div>`;
     html += retHTML;
     list.innerHTML = html;
@@ -491,7 +509,7 @@ async function searchFlights(){
   }catch(err){
     list.innerHTML = `<div class="error-msg">⚠️ Não foi possível conectar ao servidor. Verifique se o backend está rodando.</div>`;
   } finally {
-    btn.disabled=false; btn.innerHTML='<span>🔍</span> Buscar Voos Reais';
+    btn.disabled=false; btn.innerHTML='<span>🔍</span> Buscar Voos';
   }
 }
 
