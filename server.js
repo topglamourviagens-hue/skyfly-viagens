@@ -1,10 +1,14 @@
 const express = require('express');
-const cors = require('cors');
-const fetch = require('node-fetch');
+const cors    = require('cors');
+const fetch   = require('node-fetch');
+const path    = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// ── SERVE ARQUIVOS ESTÁTICOS (pasta public/) ──
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ── CREDENCIAIS AMADEUS ──
 const AMADEUS_KEY    = 'wglUqHoyBZDbAh03oSSqdGrZTT4kgUGf';
@@ -80,5 +84,10 @@ app.get('/api/airports', async (req, res) => {
   }
 });
 
+// ── ROTA PRINCIPAL — entrega o site ──
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Servidor SkyFly rodando na porta ${PORT}`));
