@@ -168,16 +168,61 @@ footer strong{color:var(--gold);}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:var(--gold);color:var(--sky);padding:.8rem 1.4rem;border-radius:10px;font-size:.85rem;font-weight:500;z-index:9999;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);}
 .toast.show{transform:translateY(0);opacity:1;}
-
 .error-msg{background:rgba(220,50,50,.12);border:1px solid rgba(220,50,50,.3);color:#ff8a80;padding:1rem 1.4rem;border-radius:12px;font-size:.85rem;text-align:center;margin-bottom:1rem;}
-
 @media(max-width:700px){.flight-card{grid-template-columns:1fr}.price-col{text-align:left}.form-grid{grid-template-columns:1fr}}
+
+/* ── TEMAS CLIMÁTICOS DINÂMICOS ── */
+body{transition:background 2s ease,color 1s ease;}
+body.theme-morning{--deep:#1a3a5c;--sky:#1e4a7a;--gold:#f4a435;--gold-light:#ffc55a;--ice:#fff8ee;--cloud:#ffe4b0;--border:rgba(244,164,53,0.25);--card-bg:rgba(20,50,90,0.7);}
+body.theme-morning .hero-bg{background:linear-gradient(180deg,#ff7e00 0%,#ffaa3c 20%,#ffd580 40%,#87ceeb 65%,#1e4a7a 100%) !important;}
+body.theme-afternoon{--deep:#0d2744;--sky:#1565a0;--gold:#ffb300;--gold-light:#ffd54f;--ice:#e3f2fd;--cloud:#bbdefb;--border:rgba(255,179,0,0.25);--card-bg:rgba(15,50,100,0.7);}
+body.theme-afternoon .hero-bg{background:linear-gradient(180deg,#2980b9 0%,#56b4e0 40%,#b8e4ff 100%) !important;}
+body.theme-sunset{--deep:#1a0a2e;--sky:#2d1b4e;--gold:#ff6b35;--gold-light:#ff9a6c;--ice:#ffe0d0;--cloud:#ffb899;--border:rgba(255,107,53,0.3);--card-bg:rgba(40,20,70,0.7);}
+body.theme-sunset .hero-bg{background:linear-gradient(180deg,#0d0221 0%,#2d1b4e 20%,#7b2d8b 45%,#d4546a 65%,#ff8c42 82%,#ffd166 100%) !important;}
+body.theme-night{--deep:#020810;--sky:#050d1a;--gold:#c9a96e;--gold-light:#e8c87a;--ice:#d0e8ff;--cloud:#8ab4d4;--border:rgba(201,169,110,0.2);--card-bg:rgba(5,13,26,0.85);}
+body.theme-night .hero-bg{background:linear-gradient(180deg,#000005 0%,#020810 50%,#050d1a 100%) !important;}
+body.theme-midnight{--deep:#000005;--sky:#03060f;--gold:#6e8ca0;--gold-light:#8eb5cc;--ice:#b0c8e0;--cloud:#6a8fa8;--border:rgba(110,140,160,0.2);--card-bg:rgba(3,6,15,0.9);}
+body.theme-midnight .hero-bg{background:linear-gradient(180deg,#000002 0%,#000308 60%,#03060f 100%) !important;}
+body.theme-rain{--deep:#0d1a1f;--sky:#122535;--gold:#5ba3c9;--gold-light:#7ec8e3;--ice:#d0eaf5;--cloud:#a0c8e0;--border:rgba(91,163,201,0.25);--card-bg:rgba(12,25,40,0.8);}
+body.theme-rain .hero-bg{background:linear-gradient(180deg,#1a2a35 0%,#2a4a5a 50%,#1a3545 100%) !important;}
+body.theme-cloudy{--deep:#1a1e24;--sky:#252c36;--gold:#9ab0c0;--gold-light:#b8cdd8;--ice:#dde8f0;--cloud:#b0bec5;--border:rgba(154,176,192,0.2);--card-bg:rgba(25,30,40,0.8);}
+body.theme-cloudy .hero-bg{background:linear-gradient(180deg,#2c3540 0%,#3a4a58 50%,#252c36 100%) !important;}
+body.theme-storm{--deep:#080c10;--sky:#0f1820;--gold:#7a9ab0;--gold-light:#90b5cc;--ice:#c0d8e8;--cloud:#7090a8;--border:rgba(122,154,176,0.2);--card-bg:rgba(8,12,16,0.9);}
+body.theme-storm .hero-bg{background:linear-gradient(180deg,#050810 0%,#0f1a25 50%,#080c10 100%) !important;}
+
+/* Elementos visuais climáticos */
+.weather-layer{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.sun{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:90px;height:90px;background:radial-gradient(circle,#fffde0 0%,#ffe066 40%,transparent 70%);border-radius:50%;box-shadow:0 0 80px 40px rgba(255,220,50,0.35);animation:sunPulse 4s ease-in-out infinite;display:none;}
+@keyframes sunPulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 0 80px 40px rgba(255,220,50,0.35)}50%{transform:translateX(-50%) scale(1.08);box-shadow:0 0 120px 60px rgba(255,220,50,0.5)}}
+.moon{position:absolute;top:8%;right:10%;width:65px;height:65px;border-radius:50%;box-shadow:0 0 50px 20px rgba(220,200,100,0.18),inset -12px -4px 0 rgba(180,160,60,0.4);background:radial-gradient(circle at 40% 40%,#fff8d0,#d4b84a);animation:moonGlow 5s ease-in-out infinite;display:none;}
+@keyframes moonGlow{0%,100%{box-shadow:0 0 50px 20px rgba(220,200,100,0.15),inset -12px -4px 0 rgba(180,160,60,0.4)}50%{box-shadow:0 0 80px 35px rgba(220,200,100,0.28),inset -12px -4px 0 rgba(180,160,60,0.4)}}
+.cloud-el{position:absolute;background:rgba(255,255,255,0.07);border-radius:60px;filter:blur(10px);animation:cloudDrift linear infinite;display:none;}
+@keyframes cloudDrift{from{transform:translateX(-300px)}to{transform:translateX(calc(100vw + 300px))}}
+.rain-drop{position:absolute;top:-20px;width:1.5px;background:linear-gradient(to bottom,transparent,rgba(174,214,241,0.7));border-radius:2px;animation:rainFall linear infinite;display:none;}
+@keyframes rainFall{0%{transform:translateY(0) rotate(15deg);opacity:0}5%{opacity:1}95%{opacity:.8}100%{transform:translateY(110vh) rotate(15deg);opacity:0}}
+.lightning{position:fixed;inset:0;background:rgba(200,230,255,0.08);z-index:1;pointer-events:none;display:none;animation:lightning 0.1s ease;}
+@keyframes lightning{0%,100%{opacity:0}50%{opacity:1}}
+
+/* Badge do clima */
+.weather-badge{position:fixed;top:1.2rem;right:1.2rem;z-index:500;background:rgba(0,0,0,0.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:50px;padding:.5rem 1.1rem;display:flex;align-items:center;gap:.6rem;font-size:.72rem;color:var(--ice);letter-spacing:.04em;opacity:0;animation:fadeDown .8s ease forwards 2.5s;transition:border-color 1s ease,color 1s ease;}
+.weather-badge .w-icon{font-size:1.2rem;line-height:1;}
+.weather-badge .w-info{display:flex;flex-direction:column;gap:1px;}
+.weather-badge .w-desc{font-weight:400;}
+.weather-badge .w-city{font-size:.6rem;opacity:.55;}
 </style>
 </head>
 <body>
+<div class="weather-badge" id="weatherBadge">
+  <span class="w-icon" id="wIcon">🌍</span>
+  <div class="w-info">
+    <span class="w-desc" id="wDesc">Detectando clima...</span>
+    <span class="w-city" id="wCity"></span>
+  </div>
+</div>
 
 <section class="hero">
   <div class="hero-bg"></div>
+  <div class="weather-layer" id="weatherLayer"></div>
   <div class="stars" id="stars"></div>
   <div class="plane-deco">✈</div>
   <div class="hero-content">
@@ -596,6 +641,178 @@ function showToast(msg){
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+
+// ══════════════════════════════════════════
+// 🌤️  SISTEMA DE TEMA CLIMÁTICO DINÂMICO
+// ══════════════════════════════════════════
+const WEATHER_CODES = {
+  0:{icon:'✨',desc:'Céu limpo'},
+  1:{icon:'🌤️',desc:'Quase limpo'},2:{icon:'⛅',desc:'Parcialmente nublado'},3:{icon:'☁️',desc:'Nublado'},
+  45:{icon:'🌫️',desc:'Neblina'},48:{icon:'🌫️',desc:'Nevoeiro'},
+  51:{icon:'🌦️',desc:'Garoa leve'},53:{icon:'🌦️',desc:'Garoa'},55:{icon:'🌧️',desc:'Garoa intensa'},
+  61:{icon:'🌧️',desc:'Chuva leve'},63:{icon:'🌧️',desc:'Chuva'},65:{icon:'🌧️',desc:'Chuva forte'},
+  71:{icon:'🌨️',desc:'Neve leve'},73:{icon:'🌨️',desc:'Neve'},75:{icon:'❄️',desc:'Neve intensa'},
+  80:{icon:'🌦️',desc:'Pancadas leves'},81:{icon:'🌧️',desc:'Pancadas'},82:{icon:'⛈️',desc:'Pancadas fortes'},
+  95:{icon:'⛈️',desc:'Tempestade'},96:{icon:'⛈️',desc:'Tempestade c/ granizo'},99:{icon:'⛈️',desc:'Tempestade forte'},
+};
+
+function getTimeTheme(hour) {
+  if (hour >= 5  && hour < 8)  return 'morning';
+  if (hour >= 8  && hour < 17) return 'afternoon';
+  if (hour >= 17 && hour < 20) return 'sunset';
+  if (hour >= 20 && hour < 24) return 'night';
+  return 'midnight';
+}
+
+function getWeatherTheme(code, hour) {
+  const isRain   = [51,53,55,61,63,65,80,81,82].includes(code);
+  const isStorm  = [95,96,99].includes(code);
+  const isCloudy = [2,3,45,48].includes(code);
+  if (isStorm)  return 'storm';
+  if (isRain)   return 'rain';
+  if (isCloudy) return 'cloudy';
+  return getTimeTheme(hour);
+}
+
+function applyTheme(theme, weatherCode, hour, cityName) {
+  const body = document.body;
+  // Remove todos os temas anteriores
+  body.className = body.className.replace(/theme-\S+/g,'').trim();
+  body.classList.add(`theme-${theme}`);
+
+  const layer = document.getElementById('weatherLayer');
+  layer.innerHTML = '';
+
+  // Mostrar/esconder estrelas
+  const starsEl = document.getElementById('stars');
+  starsEl.style.display = ['night','midnight'].includes(theme) ? 'block' : 'none';
+
+  // ── Sol ──
+  if (['morning','afternoon'].includes(theme)) {
+    const sun = document.createElement('div');
+    sun.className = 'sun';
+    sun.style.display = 'block';
+    sun.style.top = theme === 'morning' ? '12%' : '8%';
+    layer.appendChild(sun);
+  }
+
+  // ── Pôr do sol glow ──
+  if (theme === 'sunset') {
+    const glow = document.createElement('div');
+    glow.style.cssText = 'position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(255,100,30,0.3),transparent);pointer-events:none;';
+    layer.appendChild(glow);
+  }
+
+  // ── Lua + estrelas ──
+  if (['night','midnight'].includes(theme)) {
+    const moon = document.createElement('div');
+    moon.className = 'moon';
+    moon.style.display = 'block';
+    layer.appendChild(moon);
+    // Estrelas extras
+    for (let i = 0; i < 30; i++) {
+      const star = document.createElement('div');
+      const size = 1 + Math.random() * 2.5;
+      star.style.cssText = `position:absolute;width:${size}px;height:${size}px;background:white;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*60}%;opacity:${0.3+Math.random()*0.7};animation:twinkle ${2+Math.random()*4}s ease-in-out infinite ${Math.random()*5}s;`;
+      layer.appendChild(star);
+    }
+  }
+
+  // ── Nuvens ──
+  if (['cloudy','rain','storm','morning','afternoon','sunset'].includes(theme)) {
+    const count = theme === 'storm' ? 8 : theme === 'rain' ? 6 : theme === 'cloudy' ? 5 : 3;
+    const opacity = theme === 'storm' ? 0.15 : theme === 'rain' ? 0.1 : 0.07;
+    for (let i = 0; i < count; i++) {
+      const cloud = document.createElement('div');
+      const w = 150 + Math.random() * 250;
+      const h = w * 0.4;
+      cloud.className = 'cloud-el';
+      cloud.style.cssText = `display:block;width:${w}px;height:${h}px;top:${5+Math.random()*50}%;opacity:${opacity};animation-duration:${40+Math.random()*60}s;animation-delay:-${Math.random()*60}s;`;
+      layer.appendChild(cloud);
+    }
+  }
+
+  // ── Chuva ──
+  if (['rain','storm'].includes(theme)) {
+    const drops = theme === 'storm' ? 80 : 50;
+    for (let i = 0; i < drops; i++) {
+      const drop = document.createElement('div');
+      const h = 15 + Math.random() * 25;
+      drop.className = 'rain-drop';
+      drop.style.cssText = `display:block;left:${Math.random()*100}%;height:${h}px;animation-duration:${0.6+Math.random()*0.8}s;animation-delay:-${Math.random()*2}s;opacity:${0.4+Math.random()*0.4};`;
+      layer.appendChild(drop);
+    }
+    // Relâmpagos na tempestade
+    if (theme === 'storm') {
+      setInterval(() => {
+        if (Math.random() < 0.15) {
+          const flash = document.createElement('div');
+          flash.className = 'lightning';
+          flash.style.display = 'block';
+          document.body.appendChild(flash);
+          setTimeout(() => flash.remove(), 150);
+        }
+      }, 3000);
+    }
+  }
+
+  // Badge do clima
+  const wc = WEATHER_CODES[weatherCode] || {icon:'🌍', desc:'Clima atual'};
+  document.getElementById('wIcon').textContent  = wc.icon;
+  document.getElementById('wDesc').textContent  = wc.desc;
+  document.getElementById('wCity').textContent  = cityName || '';
+  document.getElementById('weatherBadge').style.opacity = '1';
+}
+
+async function detectWeatherAndApply() {
+  const hour = new Date().getHours();
+
+  // Tenta pegar localização do visitante
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        try {
+          // Clima via Open-Meteo (gratuito, sem chave)
+          const weatherRes = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`
+          );
+          const weatherData = await weatherRes.json();
+          const code = weatherData.current_weather?.weathercode ?? 0;
+
+          // Cidade via reverse geocoding (gratuito)
+          let cityName = '';
+          try {
+            const geoRes = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+            );
+            const geoData = await geoRes.json();
+            cityName = geoData.address?.city || geoData.address?.town || geoData.address?.state || '';
+          } catch(e) {}
+
+          const theme = getWeatherTheme(code, hour);
+          applyTheme(theme, code, hour, cityName);
+        } catch (e) {
+          // Se a API de clima falhar, usa só o horário
+          applyTheme(getTimeTheme(hour), 0, hour, '');
+        }
+      },
+      () => {
+        // Sem permissão de localização — usa só o horário
+        applyTheme(getTimeTheme(hour), 0, hour, 'Sua região');
+      },
+      { timeout: 6000 }
+    );
+  } else {
+    applyTheme(getTimeTheme(hour), 0, hour, '');
+  }
+}
+
+// Inicia detecção de clima
+detectWeatherAndApply();
+
+// Atualiza a cada 30 minutos
+setInterval(detectWeatherAndApply, 30 * 60 * 1000);
 </script>
 </body>
 </html>
