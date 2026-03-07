@@ -408,8 +408,12 @@ for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';
 
 // Min dates
 const today = new Date().toISOString().split('T')[0];
-document.getElementById('dateOut').min = today;
-document.getElementById('dateReturn').min = today;
+const dateOutEl = document.getElementById('dateOut');
+const dateOutRtEl = document.getElementById('dateOutRt');
+const dateReturnRtEl = document.getElementById('dateReturnRt');
+if(dateOutEl) dateOutEl.min = today;
+if(dateOutRtEl) dateOutRtEl.min = today;
+if(dateReturnRtEl) dateReturnRtEl.min = today;
 
 // State
 let tripType = 'ida';
