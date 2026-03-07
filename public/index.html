@@ -56,6 +56,16 @@ main{background:var(--sky);position:relative;z-index:1;}
 .section-label{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
 .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--white);margin-bottom:2.5rem;line-height:1.2;}
 
+/* ROUNDTRIP UNIFIED ROW */
+.roundtrip-row{display:flex;align-items:flex-end;gap:.8rem;flex-wrap:wrap;}
+.roundtrip-field{flex:1;min-width:160px;}
+.swap-btn{width:38px;height:42px;border-radius:10px;border:1px solid var(--border);background:rgba(240,180,41,.08);color:var(--gold);font-size:1rem;cursor:pointer;flex-shrink:0;margin-bottom:0;align-self:flex-end;transition:all .3s;display:flex;align-items:center;justify-content:center;}
+.swap-btn:hover{background:rgba(240,180,41,.2);border-color:var(--gold);transform:rotate(180deg);}
+.roundtrip-dates{display:flex;align-items:flex-end;gap:.5rem;flex-shrink:0;}
+.roundtrip-dates .field{min-width:130px;}
+.dates-arrow{color:var(--gold);font-size:1rem;padding-bottom:.85rem;opacity:.6;}
+@media(max-width:750px){.roundtrip-row{flex-direction:column;}.roundtrip-field,.roundtrip-dates{width:100%;}.roundtrip-dates{flex-wrap:wrap;}.swap-btn{width:100%;height:36px;}}
+
 /* TRIP TOGGLE */
 .trip-toggle{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:2rem;gap:4px;}
 .trip-btn{padding:.55rem 1.5rem;border-radius:9px;border:none;background:transparent;color:var(--cloud);font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:all .3s;font-weight:400;}
@@ -255,44 +265,62 @@ body.theme-storm .hero-bg{background:linear-gradient(180deg,#050810 0%,#0f1a25 5
   </div>
 
   <div class="search-card">
-    <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">✈ Trecho de Ida</div>
-    <div class="form-grid">
-      <div class="field">
-        <label>Origem</label>
-        <input type="text" id="origin" placeholder="Cidade ou código (ex: GRU)" autocomplete="off" oninput="autoComplete(this,'originList','originCode')">
-        <div class="autocomplete-list" id="originList"></div>
-        <input type="hidden" id="originCode">
-      </div>
-      <div class="field">
-        <label>Destino</label>
-        <input type="text" id="dest" placeholder="Cidade ou código (ex: GIG)" autocomplete="off" oninput="autoComplete(this,'destList','destCode')">
-        <div class="autocomplete-list" id="destList"></div>
-        <input type="hidden" id="destCode">
-      </div>
-      <div class="field">
-        <label>Data de Partida</label>
-        <input type="date" id="dateOut">
+
+    <!-- ── SOMENTE IDA ── -->
+    <div id="formIda">
+      <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">✈ Trecho de Ida</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Origem</label>
+          <input type="text" id="origin" placeholder="Cidade ou código (ex: SSA)" autocomplete="off" oninput="autoComplete(this,'originList','originCode')">
+          <div class="autocomplete-list" id="originList"></div>
+          <input type="hidden" id="originCode">
+        </div>
+        <div class="field">
+          <label>Destino</label>
+          <input type="text" id="dest" placeholder="Cidade ou código (ex: GRU)" autocomplete="off" oninput="autoComplete(this,'destList','destCode')">
+          <div class="autocomplete-list" id="destList"></div>
+          <input type="hidden" id="destCode">
+        </div>
+        <div class="field">
+          <label>Data de Partida</label>
+          <input type="date" id="dateOut">
+        </div>
       </div>
     </div>
 
-    <div id="returnRow" style="display:none;margin-top:.5rem;">
-      <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);margin-bottom:1rem;">↩ Trecho de Volta</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Origem (Volta)</label>
-          <input type="text" id="originReturn" placeholder="Cidade ou código" autocomplete="off" oninput="autoComplete(this,'originReturnList','originReturnCode')">
-          <div class="autocomplete-list" id="originReturnList"></div>
-          <input type="hidden" id="originReturnCode">
+    <!-- ── IDA E VOLTA UNIFICADO ── -->
+    <div id="formIdaVolta" style="display:none;">
+      <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;">⇄ Ida e Volta</div>
+
+      <!-- Linha única: Origem ↔ Destino -->
+      <div class="roundtrip-row">
+        <div class="field roundtrip-field">
+          <label>Origem</label>
+          <input type="text" id="originRt" placeholder="De onde?" autocomplete="off" oninput="autoComplete(this,'originRtList','originRtCode')">
+          <div class="autocomplete-list" id="originRtList"></div>
+          <input type="hidden" id="originRtCode">
         </div>
-        <div class="field">
-          <label>Destino (Volta)</label>
-          <input type="text" id="destReturn" placeholder="Cidade ou código" autocomplete="off" oninput="autoComplete(this,'destReturnList','destReturnCode')">
-          <div class="autocomplete-list" id="destReturnList"></div>
-          <input type="hidden" id="destReturnCode">
+
+        <button class="swap-btn" onclick="swapCities()" title="Inverter rota">⇄</button>
+
+        <div class="field roundtrip-field">
+          <label>Destino</label>
+          <input type="text" id="destRt" placeholder="Para onde?" autocomplete="off" oninput="autoComplete(this,'destRtList','destRtCode')">
+          <div class="autocomplete-list" id="destRtList"></div>
+          <input type="hidden" id="destRtCode">
         </div>
-        <div class="field">
-          <label>Data de Retorno</label>
-          <input type="date" id="dateReturn">
+
+        <div class="roundtrip-dates">
+          <div class="field">
+            <label>Ida</label>
+            <input type="date" id="dateOutRt">
+          </div>
+          <div class="dates-arrow">→</div>
+          <div class="field">
+            <label>Volta</label>
+            <input type="date" id="dateReturnRt">
+          </div>
         </div>
       </div>
     </div>
@@ -394,7 +422,8 @@ function setTrip(t){
   tripType=t;
   document.getElementById('btnIda').classList.toggle('active',t==='ida');
   document.getElementById('btnIdaVolta').classList.toggle('active',t==='idavolta');
-  document.getElementById('returnRow').style.display=t==='idavolta'?'block':'none';
+  document.getElementById('formIda').style.display = t==='ida' ? 'block' : 'none';
+  document.getElementById('formIdaVolta').style.display = t==='idavolta' ? 'block' : 'none';
 }
 
 function changePax(type,delta){
@@ -469,10 +498,27 @@ function parseOffer(offer){
 }
 
 // ── SEARCH ──
+function swapCities(){
+  const oTxt = document.getElementById('originRt');
+  const dTxt = document.getElementById('destRt');
+  const oCode = document.getElementById('originRtCode');
+  const dCode = document.getElementById('destRtCode');
+  [oTxt.value, dTxt.value] = [dTxt.value, oTxt.value];
+  [oCode.value, dCode.value] = [dCode.value, oCode.value];
+}
+
 async function searchFlights(){
-  const originCode = document.getElementById('originCode').value || document.getElementById('origin').value.match(/\(([A-Z]{3})\)/)?.[1];
-  const destCode   = document.getElementById('destCode').value   || document.getElementById('dest').value.match(/\(([A-Z]{3})\)/)?.[1];
-  const dateOut    = document.getElementById('dateOut').value;
+  let originCode, destCode, dateOut;
+
+  if(tripType === 'ida'){
+    originCode = document.getElementById('originCode').value || document.getElementById('origin').value.match(/\(([A-Z]{3})\)/)?.[1];
+    destCode   = document.getElementById('destCode').value   || document.getElementById('dest').value.match(/\(([A-Z]{3})\)/)?.[1];
+    dateOut    = document.getElementById('dateOut').value;
+  } else {
+    originCode = document.getElementById('originRtCode').value || document.getElementById('originRt').value.match(/\(([A-Z]{3})\)/)?.[1];
+    destCode   = document.getElementById('destRtCode').value   || document.getElementById('destRt').value.match(/\(([A-Z]{3})\)/)?.[1];
+    dateOut    = document.getElementById('dateOutRt').value;
+  }
 
   if(!originCode||!destCode||!dateOut){ showToast('Preencha origem, destino e data! ✈'); return; }
 
@@ -515,12 +561,10 @@ async function searchFlights(){
     let retHTML = '';
 
     if(tripType==='idavolta'){
-      const originReturnCode = document.getElementById('originReturnCode').value || destCode;
-      const destReturnCode   = document.getElementById('destReturnCode').value   || originCode;
-      const dateReturn = document.getElementById('dateReturn').value;
+      const dateReturn = document.getElementById('dateReturnRt').value;
       if(dateReturn){
         try{
-          const rParams = new URLSearchParams({origin:originReturnCode,destination:destReturnCode,date:dateReturn,adults:passengers.adults,
+          const rParams = new URLSearchParams({origin:destCode,destination:originCode,date:dateReturn,adults:passengers.adults,
             ...(passengers.children>0?{children:passengers.children}:{}),
             ...(passengers.infants>0?{infants:passengers.infants}:{})
           });
